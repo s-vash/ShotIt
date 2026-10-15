@@ -134,3 +134,5 @@ Tests/ShotItTests/  rendering, crop/undo, hit-testing, colour formats, offscreen
 ## About
 
 ShotIt is inspired by [Shottr](https://shottr.cc). It is an independent project and is not affiliated with or endorsed by Shottr.
+
+ShotIt is free software, licensed under the [GNU GPL v3](LICENSE).
