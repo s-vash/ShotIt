@@ -1,19 +1,19 @@
 <h1 align="center">ShotIt</h1>
 
 <p align="center">
-  <img src="promo/shotit-card-landscape.png" alt="ShotIt: a native macOS screenshot and annotation tool" width="820">
+  <img src="promo/shotit-card-landscape.png" alt="ShotIt: free, private screenshots for macOS" width="820">
 </p>
 
 <p align="center">
-  A fast, native macOS screenshot &amp; annotation tool that lives in your menu bar.<br>
-  Capture, annotate, blur, pin and share, without leaving the keyboard.
+  <b>Screenshots made simple.</b> Grab your screen, mark it up and share it in seconds.<br>
+  A free, private app for your Mac's menu bar.
 </p>
 
 <p align="center">
+  <a href="../../releases/latest"><img alt="Download" src="https://img.shields.io/github/v/release/s-vash/ShotIt?label=download&color=brightgreen"></a>
   <img alt="macOS 14+" src="https://img.shields.io/badge/macOS-14%2B-black?logo=apple">
-  <img alt="Apple Silicon and Intel" src="https://img.shields.io/badge/arch-arm64%20%7C%20x86__64-blue">
-  <img alt="Swift" src="https://img.shields.io/badge/Swift-AppKit%20%2B%20SwiftUI-orange?logo=swift">
-  <img alt="No third-party dependencies" src="https://img.shields.io/badge/dependencies-none-brightgreen">
+  <img alt="Apple Silicon and Intel" src="https://img.shields.io/badge/Apple%20Silicon%20%2B%20Intel-blue">
+  <img alt="Free and open source" src="https://img.shields.io/badge/free-GPL%20v3-orange">
 </p>
 
 ## Screenshots
@@ -23,19 +23,21 @@
   &nbsp;&nbsp;
   <img src="promo/screenshot-menu.png" alt="The ShotIt menu bar menu with all capture actions" width="215">
 </p>
-<p align="center"><sub>Annotate with arrows, counters, text and a magnifier (left). Every capture mode is one click or one hotkey away in the menu bar (right).</sub></p>
+<p align="center"><sub>Mark up with arrows, numbers, text and a magnifier (left). Every capture is one click or one shortcut away in the menu bar (right).</sub></p>
 
-## Highlights
+## Why you'll like it
 
-- **Capture anything:** fullscreen, area, active window or any window. While selecting an area, press **Space** to switch to picking a window, like the built-in macOS screenshot, with native rounded corners.
-- **Scrolling capture:** auto-scroll (down or up) or manual scrolling, stitched into one tall image.
-- **Smart editing:** arrows, shapes, text, numbered counters, highlighter, spotlight and magnifier. Erase repaints only the text or object and keeps the background's gradient and grain. Blur, pixelate or erase a whole area, or **text only**.
-- **Backdrop:** drop a screenshot onto your wallpaper, a gradient or an image with a soft layered shadow that follows the window's real corners.
-- **Recognize text and QR codes** from any region and copy the result.
-- **Pin to screen**, thumbnail preview with drag-out, global hotkeys and a `shotit://` URL scheme.
+- **Grab anything.** The whole screen, an area, or a single window with its native rounded corners. While selecting an area, press **Space** to switch to picking a window, just like the built-in macOS screenshot.
+- **Long pages in one image.** Scrolling capture scrolls for you (or follows you) and stitches the result into one tall picture.
+- **Mark up fast.** Arrows, boxes, text, numbered steps, highlighter, spotlight and magnifier.
+- **Hide private info.** Blur, pixelate or erase a whole area, or only the text in it. Erase repaints cleanly and keeps the background's gradient and grain.
+- **Make it look good.** Put a screenshot on your wallpaper, a gradient or an image, with a soft shadow that follows the window's real corners.
+- **Copy text from any image.** Recognize text and QR codes in any region and copy the result.
+- **Keep it handy.** Pin a screenshot on top of everything, drag a preview straight into another app, or reopen your last capture.
+- **Free and private.** No account, no ads, no tracking. Everything stays on your Mac.
 
-Default hotkeys: **⌘⇧1** fullscreen, **⌘⇧2** area, **⌃⌥⌘O** recognize text. Everything else can be bound in
-**Settings › Shortcuts**.
+Default shortcuts: **⌘⇧1** whole screen, **⌘⇧2** area, **⌃⌥⌘O** copy text from the screen. Everything else can be
+set in **Settings › Shortcuts**. If another screenshot app already uses ⌘⇧1 / ⌘⇧2, quit it or pick different keys there.
 
 ## Install
 
@@ -47,7 +49,32 @@ Default hotkeys: **⌘⇧1** fullscreen, **⌘⇧2** area, **⌃⌥⌘O** recogn
 
 Or build it yourself, below.
 
-## Build from source
+## Features
+
+| Feature | Status | Notes |
+|---|---|---|
+| Fullscreen capture | ✅ | Display under the pointer |
+| Area capture | ✅ | Frozen-screen overlay, crosshair guides, live pixel size, Shift = square, Enter = whole screen |
+| Repeat area capture | ✅ | |
+| Active window / any window | ✅ | Click a highlighted window or drag an area; native rounded corners; optional shadow. During area capture, press Space to switch to picking a window. ShotIt's own Settings/editor windows can be captured too |
+| Delayed screenshot (3 s) | ✅ | |
+| Recognize Text / QR | ✅ | Vision OCR + barcode; copies to clipboard |
+| Thumbnail preview | ✅ | Copy · Save · Edit · Pin · OCR, auto-hide, drag out to other apps |
+| Editor tools | ✅ | Erase repaints only objects/text and keeps the background's gradient and grain. Arrow A · Rectangle R · Oval O · Line L · Freehand D · Text T · Counter C · Blur/Pixelate/Erase B (each also available as Blur Text / Erase Text, which only touch detected text) · Highlighter H · Spotlight S · Magnifier M · Crop X · Select V |
+| Editor extras | ✅ | Undo/redo, move/resize handles, Shift constraints, arrow-key nudge, zoom (pinch, ⌘= ⌘- ⌘0 ⌘1), colour under cursor in 6 formats (I copies), `[` `]` size |
+| Pin to screen | ✅ | Always-on-top; scroll = resize, ⌥-scroll = opacity, double-click/Esc closes |
+| Open file / clipboard image | ✅ | Also via Finder "Open With" |
+| Settings | ✅ | After-capture actions, save folder & format, Retina downscale, Esc behaviour, launch at login, hotkey recorder with per-shortcut clear/reset |
+| URL scheme | ✅ | `shotit://grab/area?then=copy,pin` (see Settings › Advanced) |
+| Scrolling capture | ✅ | Auto-scroll (needs Accessibility), Up, and Manual modes; sticky headers/footers handled; stitched with ShotIt's own aligner. Not yet exercised against real apps |
+| Backdrop (K) | ✅ | Wallpaper (your current desktop picture, automatic — the default), Auto (colours from the screenshot), gradient, solid or image; padding, layered shadow with a Depth control that follows the window's native rounded corners, aspect ratio, grain. Applied on copy/save/pin/drag; remembered between sessions |
+| Screenshot library | ❌ | Not implemented yet |
+| S3 / cloud upload | ❌ | Not implemented yet |
+| Licensing, telemetry, updater | — | Intentionally omitted |
+
+## For developers
+
+### Build from source
 
 Requires macOS 14+, Xcode and [xcodegen](https://github.com/yonaskolb/XcodeGen) (`brew install xcodegen`).
 
@@ -64,7 +91,7 @@ install may ask for keychain access to the key: choose **Always Allow**, or run 
 Set `SIGN_IDENTITY="<name>"` to use a different certificate. A build signed this way runs on your Mac only; it is not
 a distributable binary (that needs a Developer ID certificate and notarization).
 
-## Distributing a DMG
+### Distributing a DMG
 
 ```sh
 tools/make-dmg.sh           # → dist/ShotIt-<version>.dmg (universal: Apple Silicon + Intel)
@@ -91,33 +118,7 @@ xcodebuild -project ShotIt.xcodeproj -scheme ShotIt -derivedDataPath build/Deriv
 On first capture macOS asks for **Screen & System Audio Recording** permission; grant it and relaunch.
 Auto-scrolling capture additionally needs **Accessibility**.
 
-Default hotkeys: ⌘⇧1 fullscreen, ⌘⇧2 area, ⌃⌥⌘O text recognition; the rest are unbound.
-If another screenshot app (for example Shottr) already owns ⌘⇧1 / ⌘⇧2, quit it or rebind in **Settings › Shortcuts**.
-
-## Features
-
-| Feature | Status | Notes |
-|---|---|---|
-| Fullscreen capture | ✅ | Display under the pointer |
-| Area capture | ✅ | Frozen-screen overlay, crosshair guides, live pixel size, Shift = square, Enter = whole screen |
-| Repeat area capture | ✅ | |
-| Active window / any window | ✅ | Click a highlighted window or drag an area; native rounded corners; optional shadow. During area capture, press Space to switch to picking a window. ShotIt's own Settings/editor windows can be captured too |
-| Delayed screenshot (3 s) | ✅ | |
-| Recognize Text / QR | ✅ | Vision OCR + barcode; copies to clipboard |
-| Thumbnail preview | ✅ | Copy · Save · Edit · Pin · OCR, auto-hide, drag out to other apps |
-| Editor tools | ✅ | Erase repaints only objects/text and keeps the background's gradient and grain. Arrow A · Rectangle R · Oval O · Line L · Freehand D · Text T · Counter C · Blur/Pixelate/Erase B (each also available as Blur Text / Erase Text, which only touch detected text) · Highlighter H · Spotlight S · Magnifier M · Crop X · Select V |
-| Editor extras | ✅ | Undo/redo, move/resize handles, Shift constraints, arrow-key nudge, zoom (pinch, ⌘= ⌘- ⌘0 ⌘1), colour under cursor in 6 formats (I copies), `[` `]` size |
-| Pin to screen | ✅ | Always-on-top; scroll = resize, ⌥-scroll = opacity, double-click/Esc closes |
-| Open file / clipboard image | ✅ | Also via Finder "Open With" |
-| Settings | ✅ | After-capture actions, save folder & format, Retina downscale, Esc behaviour, launch at login, hotkey recorder with per-shortcut clear/reset |
-| URL scheme | ✅ | `shotit://grab/area?then=copy,pin` (see Settings › Advanced) |
-| Scrolling capture | ✅ | Auto-scroll (needs Accessibility), Up, and Manual modes; sticky headers/footers handled; stitched with ShotIt's own aligner. Not yet exercised against real apps |
-| Backdrop (K) | ✅ | Wallpaper (your current desktop picture, automatic — the default), Auto (colours from the screenshot), gradient, solid or image; padding, layered shadow with a Depth control that follows the window's native rounded corners, aspect ratio, grain. Applied on copy/save/pin/drag; remembered between sessions |
-| Screenshot library | ❌ | Not implemented yet |
-| S3 / cloud upload | ❌ | Not implemented yet |
-| Licensing, telemetry, updater | — | Intentionally omitted |
-
-## Layout
+### Layout
 
 ```
 Sources/ShotIt/

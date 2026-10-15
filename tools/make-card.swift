@@ -2,24 +2,24 @@
 // Usage: swiftc tools/make-card.swift -o build/make-card && build/make-card promo Sources/ShotIt/Assets.xcassets/AppIcon.appiconset/icon_512x512@2x.png
 import AppKit
 
-// Edit the content here (the numbers come from /cost and the repo).
-let duration = "1h 57m"
-let durationNote = "≈ 57 min AI time + 1 h builds & tests"
-let testsCount = "47 tests"
-let linesNote = "5,300+ lines of Swift"
-let tagline = "A native macOS screenshot & annotation tool, inspired by Shottr"
-let stack = "Swift · AppKit · ScreenCaptureKit · Vision · built with Claude Code"
+// Edit the content here.
+let tagline = "Screenshots made simple. Capture, mark up and share in seconds."
+let stack = "Free · Open source · macOS 14+ · Apple Silicon & Intel"
+
+// (headline, subline, note) for the two highlight tiles.
+let freeFact = ("Free", "No ads, no account, no subscription", "Open source under the GPL v3")
+let privateFact = ("Private", "Everything stays on your Mac", "No tracking, no uploads")
 
 let keyBullets = [
-    "A hotkey for every capture mode",
-    "Space turns an area into a window pick",
-    "Pin, preview and drag-out in one flow",
+    "One shortcut for every kind of capture",
+    "Press Space to grab a single window",
+    "A preview pops up right where you work",
 ]
-let hotkeys: [(String, String)] = [("Fullscreen", "⌘⇧1"), ("Area", "⌘⇧2"), ("Text recognition", "⌃⌥⌘O")]
+let hotkeys: [(String, String)] = [("Whole screen", "⌘⇧1"), ("Area", "⌘⇧2"), ("Copy text", "⌃⌥⌘O")]
 
-let capture = ["Fullscreen, area & window", "Scrolling capture, 3 modes", "Text & QR recognition", "Preview popup at your cursor"]
-let edit = ["12 annotation tools", "Smart Erase keeps the grain", "Colour picker, 6 formats", "Backdrop: wallpaper & shadow"]
-let everywhere = ["Pin screenshots on screen", "Drag-out & reopen last", "Global hotkeys & URL scheme", "Menu-bar app with Settings"]
+let capture = ["Whole screen, area or window", "Scroll long pages into one image", "Copy text from any image", "Instant preview at your cursor"]
+let edit = ["Arrows, text, shapes, numbers", "Blur or erase private info", "Pretty backdrops & shadows", "Pick any colour on screen"]
+let everywhere = ["Pin screenshots on screen", "Drag straight into any app", "Reopen your last capture", "Lives quietly in the menu bar"]
 
 // MARK: - Palette (warm neutrals, tinted; no pure black or white)
 
@@ -97,35 +97,17 @@ func heroTile(_ r: CGRect) {
     text(stack, in: CGRect(x: r.minX + pad, y: r.maxY - pad - r.width * 0.026, width: r.width - 2 * pad, height: 60), font: body(r.width * 0.024), color: muted(on: sun))
 }
 
-func timeTile(_ r: CGRect) {
-    fillTile(r, tomato, radius: 40)
-    let pad = r.width * 0.08
-    // Stopwatch.
-    let sw = r.width * 0.17, c = CGPoint(x: r.maxX - pad - sw / 2, y: r.minY + pad + sw / 2 + 6)
-    ink.setStroke()
-    let ring = NSBezierPath(ovalIn: CGRect(x: c.x - sw / 2, y: c.y - sw / 2, width: sw, height: sw)); ring.lineWidth = sw * 0.09; ring.stroke()
-    let hand = NSBezierPath(); hand.move(to: c); hand.line(to: CGPoint(x: c.x + sw * 0.18, y: c.y - sw * 0.24)); hand.lineWidth = sw * 0.08; hand.lineCapStyle = .round; hand.stroke()
-    let knob = NSBezierPath(); knob.move(to: CGPoint(x: c.x, y: c.y - sw / 2)); knob.line(to: CGPoint(x: c.x, y: c.y - sw / 2 - sw * 0.14)); knob.lineWidth = sw * 0.1; knob.lineCapStyle = .round; knob.stroke()
-    let bigSize = r.width * 0.155
-    let h = text(duration, in: CGRect(x: r.minX + pad, y: r.minY + r.height * 0.30, width: r.width - 2 * pad, height: 200), font: display(bigSize), color: ink, kern: -bigSize * 0.02)
-    let h2 = text("roughly, prompt to working app", in: CGRect(x: r.minX + pad, y: r.minY + r.height * 0.30 + h + 2, width: r.width - 2 * pad, height: 100), font: demi(r.width * 0.052), color: ink)
-    text(durationNote, in: CGRect(x: r.minX + pad, y: r.minY + r.height * 0.30 + h + h2 + 8, width: r.width - 2 * pad, height: 100), font: body(r.width * 0.042), color: muted(on: tomato))
-}
-
-func testsTile(_ r: CGRect) {
-    fillTile(r, mint, radius: 40)
-    let pad = r.width * 0.08
-    let bigSize = r.width * 0.17
-    let h = text(testsCount, in: CGRect(x: r.minX + pad, y: r.minY + pad - 2, width: r.width - 2 * pad, height: 200), font: display(bigSize), color: ink, kern: -bigSize * 0.02)
-    text(linesNote, in: CGRect(x: r.minX + pad, y: r.minY + pad + h, width: r.width - 2 * pad, height: 100), font: demi(r.width * 0.058), color: ink)
-    // One dot per test, all passing.
-    let cols = 16, rows = 3
-    let gap = (r.width - 2 * pad) / CGFloat(cols)
-    let rad = gap * 0.34
-    let top = r.maxY - pad - CGFloat(rows) * gap + gap / 2
-    for i in 0..<47 {
-        dot(CGPoint(x: r.minX + pad + gap * (CGFloat(i % cols) + 0.5), y: top + gap * CGFloat(i / cols)), rad, ink)
+func factTile(_ r: CGRect, color: NSColor, fact: (String, String, String), circle: NSColor) {
+    fillTile(r, color, radius: 40)
+    clipToTile(r, radius: 40) {  // soft circle peeking from the corner
+        dot(CGPoint(x: r.maxX - r.width * 0.02, y: r.minY + r.height * 0.04), r.width * 0.26, circle)
     }
+    let pad = r.width * 0.08
+    let bigSize = r.width * 0.19
+    let top = r.minY + r.height * 0.22
+    let h = text(fact.0, in: CGRect(x: r.minX + pad, y: top, width: r.width - 2 * pad, height: 200), font: display(bigSize), color: ink, kern: -bigSize * 0.02)
+    let h2 = text(fact.1, in: CGRect(x: r.minX + pad, y: top + h + 2, width: r.width - 2 * pad, height: 100), font: demi(r.width * 0.05), color: ink)
+    text(fact.2, in: CGRect(x: r.minX + pad, y: top + h + h2 + 8, width: r.width - 2 * pad, height: 100), font: body(r.width * 0.042), color: muted(on: color))
 }
 
 func hotkeyTile(_ r: CGRect, wide: Bool) {
@@ -134,7 +116,7 @@ func hotkeyTile(_ r: CGRect, wide: Bool) {
     let leftW = wide ? r.width * 0.56 : r.width - 2 * pad
     // Pill.
     let pillH: CGFloat = wide ? 32 : r.width * 0.1
-    let pillText = "Hotkeys"
+    let pillText = "Shortcuts"
     let pf = heavy(pillH * 0.5)
     let pw = ceil((pillText as NSString).size(withAttributes: [.font: pf, .kern: 1]).width) + pillH * 0.9
     fillTile(CGRect(x: r.minX + pad, y: r.minY + pad, width: pw, height: pillH), sun, radius: pillH / 2)
@@ -148,12 +130,12 @@ func hotkeyTile(_ r: CGRect, wide: Bool) {
         dot(CGPoint(x: r.minX + pad + 5, y: y + bs * 0.62), 4.5, sky)
         y += text(b, in: CGRect(x: r.minX + pad + 22, y: y, width: leftW - 22, height: 300), font: body(bs), color: cream.withAlphaComponent(0.9)) + (wide ? 5 : 10)
     }
-    // Recovered hotkeys as keycaps.
+    // Default shortcuts as keycaps.
     let ks = wide ? r.height * 0.09 : r.width * 0.052
     if wide {
         var ky = r.minY + pad + 4
         let kx = r.minX + r.width * 0.62
-        text("Default hotkeys", in: CGRect(x: kx, y: ky, width: r.width * 0.34, height: 40), font: demi(ks * 0.95), color: sun)
+        text("Default shortcuts", in: CGRect(x: kx, y: ky, width: r.width * 0.34, height: 40), font: demi(ks * 0.95), color: sun)
         ky += ks * 2.1
         for (label, keys) in hotkeys {
             text(label, in: CGRect(x: kx, y: ky + ks * 0.3, width: r.width * 0.17, height: 40), font: body(ks), color: cream.withAlphaComponent(0.85))
@@ -216,22 +198,22 @@ func cell(_ c: Int, _ r: Int, _ cs: Int, _ rs: Int, margin m: CGFloat, gap g: CG
 render(name: "shotit-card-landscape.png", w: 1600, h: 900) { w, h in
     func c(_ a: Int, _ b: Int, _ cs: Int = 1, _ rs: Int = 1) -> CGRect { cell(a, b, cs, rs, margin: 44, gap: 18, cols: 4, rows: 3, w: w, h: h) }
     heroTile(c(0, 0, 2, 2))
-    timeTile(c(2, 0))
+    factTile(c(2, 0), color: tomato, fact: freeFact, circle: rgb(0xFF8A6E))
     hotkeyTile(c(3, 0, 1, 2), wide: false)
-    testsTile(c(2, 1))
+    factTile(c(2, 1), color: mint, fact: privateFact, circle: rgb(0x86E8C3))
     listTile(c(0, 2), title: "Capture", items: capture, color: sky)
     listTile(c(1, 2), title: "Edit", items: edit, color: pink)
-    listTile(c(2, 2, 2, 1), title: "Everywhere", items: everywhere, color: lilac, columns: 2)
+    listTile(c(2, 2, 2, 1), title: "Handy", items: everywhere, color: lilac, columns: 2)
 }
 
 // 1:1 (Instagram, feeds)
 render(name: "shotit-card-square.png", w: 1080, h: 1080) { w, h in
     func c(_ a: Int, _ b: Int, _ cs: Int = 1, _ rs: Int = 1) -> CGRect { cell(a, b, cs, rs, margin: 40, gap: 16, cols: 3, rows: 4, w: w, h: h) }
     heroTile(c(0, 0, 2, 2))
-    timeTile(c(2, 0))
-    testsTile(c(2, 1))
+    factTile(c(2, 0), color: tomato, fact: freeFact, circle: rgb(0xFF8A6E))
+    factTile(c(2, 1), color: mint, fact: privateFact, circle: rgb(0x86E8C3))
     hotkeyTile(c(0, 2, 3, 1), wide: true)
     listTile(c(0, 3), title: "Capture", items: capture, color: sky)
     listTile(c(1, 3), title: "Edit", items: edit, color: pink)
-    listTile(c(2, 3), title: "Everywhere", items: everywhere, color: lilac)
+    listTile(c(2, 3), title: "Handy", items: everywhere, color: lilac)
 }
