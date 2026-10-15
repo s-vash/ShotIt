@@ -51,26 +51,23 @@ Or build it yourself, below.
 
 ## Features
 
-| Feature | Status | Notes |
-|---|---|---|
-| Fullscreen capture | ✅ | Display under the pointer |
-| Area capture | ✅ | Frozen-screen overlay, crosshair guides, live pixel size, Shift = square, Enter = whole screen |
-| Repeat area capture | ✅ | |
-| Active window / any window | ✅ | Click a highlighted window or drag an area; native rounded corners; optional shadow. During area capture, press Space to switch to picking a window. ShotIt's own Settings/editor windows can be captured too |
-| Delayed screenshot (3 s) | ✅ | |
-| Recognize Text / QR | ✅ | Vision OCR + barcode; copies to clipboard |
-| Thumbnail preview | ✅ | Copy · Save · Edit · Pin · OCR, auto-hide, drag out to other apps |
-| Editor tools | ✅ | Erase repaints only objects/text and keeps the background's gradient and grain. Arrow A · Rectangle R · Oval O · Line L · Freehand D · Text T · Counter C · Blur/Pixelate/Erase B (each also available as Blur Text / Erase Text, which only touch detected text) · Highlighter H · Spotlight S · Magnifier M · Crop X · Select V |
-| Editor extras | ✅ | Undo/redo, move/resize handles, Shift constraints, arrow-key nudge, zoom (pinch, ⌘= ⌘- ⌘0 ⌘1), colour under cursor in 6 formats (I copies), `[` `]` size |
-| Pin to screen | ✅ | Always-on-top; scroll = resize, ⌥-scroll = opacity, double-click/Esc closes |
-| Open file / clipboard image | ✅ | Also via Finder "Open With" |
-| Settings | ✅ | After-capture actions, save folder & format, Retina downscale, Esc behaviour, launch at login, hotkey recorder with per-shortcut clear/reset |
-| URL scheme | ✅ | `shotit://grab/area?then=copy,pin` (see Settings › Advanced) |
-| Scrolling capture | ✅ | Auto-scroll (needs Accessibility), Up, and Manual modes; sticky headers/footers handled; stitched with ShotIt's own aligner. Not yet exercised against real apps |
-| Backdrop (K) | ✅ | Wallpaper (your current desktop picture, automatic — the default), Auto (colours from the screenshot), gradient, solid or image; padding, layered shadow with a Depth control that follows the window's native rounded corners, aspect ratio, grain. Applied on copy/save/pin/drag; remembered between sessions |
-| Screenshot library | ❌ | Not implemented yet |
-| S3 / cloud upload | ❌ | Not implemented yet |
-| Licensing, telemetry, updater | — | Intentionally omitted |
+| Feature | Details |
+|---|---|
+| Fullscreen capture | Display under the pointer |
+| Area capture | Frozen-screen overlay, crosshair guides, live pixel size, Shift = square, Enter = whole screen |
+| Repeat area capture | Re-grab the same area again with one shortcut |
+| Active window / any window | Click a highlighted window or drag an area; native rounded corners; optional shadow. During area capture, press Space to switch to picking a window. ShotIt's own Settings/editor windows can be captured too |
+| Delayed screenshot (3 s) | Gives you time to open a menu or hover state first |
+| Recognize Text / QR | Vision OCR + barcode; copies to clipboard |
+| Thumbnail preview | Copy · Save · Edit · Pin · OCR, auto-hide, drag out to other apps |
+| Editor tools | Erase repaints only objects/text and keeps the background's gradient and grain. Arrow A · Rectangle R · Oval O · Line L · Freehand D · Text T · Counter C · Blur/Pixelate/Erase B (each also available as Blur Text / Erase Text, which only touch detected text) · Highlighter H · Spotlight S · Magnifier M · Crop X · Select V |
+| Editor extras | Undo/redo, move/resize handles, Shift constraints, arrow-key nudge, zoom (pinch, ⌘= ⌘- ⌘0 ⌘1), colour under cursor in 6 formats (I copies), `[` `]` size |
+| Pin to screen | Always-on-top; scroll = resize, ⌥-scroll = opacity, double-click/Esc closes |
+| Open file / clipboard image | Also via Finder "Open With" |
+| Settings | After-capture actions, save folder & format, Retina downscale, Esc behaviour, launch at login, hotkey recorder with per-shortcut clear/reset |
+| URL scheme | `shotit://grab/area?then=copy,pin` (see Settings › Advanced) |
+| Scrolling capture | Auto-scroll (needs Accessibility), Up, and Manual modes; sticky headers/footers handled; stitched into one tall image |
+| Backdrop (K) | Wallpaper (your current desktop picture, automatic — the default), Auto (colours from the screenshot), gradient, solid or image; padding, layered shadow with a Depth control that follows the window's native rounded corners, aspect ratio, grain. Applied on copy/save/pin/drag; remembered between sessions |
 
 ## For developers
 

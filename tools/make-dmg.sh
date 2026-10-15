@@ -44,6 +44,7 @@ DMG="dist/ShotIt-$VERSION.dmg"
 rm -rf "$STAGE" "$DMG"
 mkdir -p "$STAGE" dist
 ditto "$APP" "$STAGE/ShotIt.app"
+cp LICENSE "$STAGE/LICENSE.txt"
 ln -s /Applications "$STAGE/Applications"
 cat > "$STAGE/First launch.txt" <<TXT
 ShotIt is not notarized by Apple, so macOS blocks it the first time.
