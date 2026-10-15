@@ -1,0 +1,81 @@
+name: ShotIt
+options:
+  bundleIdPrefix: com.shotit
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MACOSX_DEPLOYMENT_TARGET: "14.0"
+    CODE_SIGN_IDENTITY: "-"
+    CODE_SIGN_STYLE: Manual
+    ENABLE_HARDENED_RUNTIME: NO
+    DEAD_CODE_STRIPPING: YES
+    # Keep the build machine's absolute paths (home directory, username) out of #file strings and debug info.
+    OTHER_SWIFT_FLAGS: "$(inherited) -file-prefix-map $(SRCROOT)=/ShotIt -debug-prefix-map $(SRCROOT)=/ShotIt"
+targets:
+  ShotIt:
+    type: application
+    platform: macOS
+    sources:
+      - path: Sources/ShotIt
+    info:
+      path: Sources/ShotIt/Info.plist
+      properties:
+        CFBundleName: $(PRODUCT_NAME)
+        CFBundleDisplayName: $(PRODUCT_NAME)
+        CFBundleIconName: AppIcon
+        CFBundleShortVersionString: "0.1.0"
+        CFBundleVersion: "1"
+        LSApplicationCategoryType: public.app-category.utilities
+        LSUIElement: true
+        NSPrincipalClass: NSApplication
+        NSHumanReadableCopyright: "ShotIt"
+        CFBundleURLTypes:
+          - CFBundleURLName: com.shotit.app
+            CFBundleTypeRole: Editor
+            CFBundleURLSchemes: [shotit]
+        CFBundleDocumentTypes:
+          - CFBundleTypeRole: Editor
+            LSHandlerRank: Alternate
+            LSItemContentTypes: [public.png, public.jpeg, public.tiff, com.compuserve.gif]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.shotit.app
+        PRODUCT_NAME: ShotIt
+        PRODUCT_MODULE_NAME: ShotIt
+        GENERATE_INFOPLIST_FILE: NO
+        COMBINE_HIDPI_IMAGES: YES
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+      configs:
+        # Separate identity so macOS tracks Screen Recording permission per build flavour.
+        Debug:
+          PRODUCT_BUNDLE_IDENTIFIER: com.shotit.app.debug
+          PRODUCT_NAME: ShotIt Debug
+  ShotItTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: Tests/ShotItTests
+    dependencies:
+      - target: ShotIt
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.shotit.tests
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/ShotIt.app/Contents/MacOS/ShotIt"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+      configs:
+        Debug:
+          TEST_HOST: "$(BUILT_PRODUCTS_DIR)/ShotIt Debug.app/Contents/MacOS/ShotIt Debug"
+schemes:
+  ShotIt:
+    build:
+      targets:
+        ShotIt: all
+        ShotItTests: [test]
+    test:
+      targets: [ShotItTests]
+    run:
+      config: Debug

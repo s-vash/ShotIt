@@ -1,0 +1,5 @@
+build/
+ShotIt.xcodeproj/
+.DS_Store
+*.bak-brewcleanup
+dist/
