@@ -26,8 +26,8 @@ targets:
         CFBundleName: $(PRODUCT_NAME)
         CFBundleDisplayName: $(PRODUCT_NAME)
         CFBundleIconName: AppIcon
-        CFBundleShortVersionString: "0.1.1"
-        CFBundleVersion: "2"
+        CFBundleShortVersionString: "0.1.2"
+        CFBundleVersion: "3"
         LSApplicationCategoryType: public.app-category.utilities
         LSUIElement: true
         NSPrincipalClass: NSApplication

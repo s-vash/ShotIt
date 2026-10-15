@@ -94,6 +94,13 @@ enum HotKeyAction: String, CaseIterable, Identifiable {
     }
 }
 
+/// Why a shortcut may not work as expected.
+enum HotKeyConflict: Equatable {
+    case action(HotKeyAction)        // another ShotIt action uses the same keys
+    case system(SystemShortcut)      // macOS itself uses the same keys
+    case otherApp                    // another app already registered the same keys
+}
+
 /// Registers system-wide hotkeys through Carbon's RegisterEventHotKey.
 final class HotKeyCenter {
     static let shared = HotKeyCenter()
@@ -103,6 +110,8 @@ final class HotKeyCenter {
     private var refs: [HotKeyAction: EventHotKeyRef] = [:]
     private var ids: [UInt32: HotKeyAction] = [:]
     private var eventHandler: EventHandlerRef?
+    private var failed: Set<HotKeyAction> = []
+    private var systemShortcuts: [SystemShortcut] = SystemShortcuts.load()
     private let signature: OSType = 0x53_48_4F_54  // 'SHOT'
 
     private init() {}
@@ -141,12 +150,32 @@ final class HotKeyCenter {
         NotificationCenter.default.post(name: HotKeyCenter.didChange, object: nil)
     }
 
+    /// Whether `action`'s shortcut collides with another ShotIt action, a macOS shortcut or another app.
+    func conflict(for action: HotKeyAction) -> HotKeyConflict? {
+        guard let sc = shortcut(for: action) else { return nil }
+        let mask = NSEvent.ModifierFlags([.command, .option, .control, .shift]).rawValue
+        if let other = HotKeyAction.allCases.first(where: {
+            $0 != action && shortcut(for: $0).map { $0.keyCode == sc.keyCode && $0.modifiers & mask == sc.modifiers & mask } == true
+        }) { return .action(other) }
+        if let system = SystemShortcuts.conflict(for: sc, in: systemShortcuts) { return .system(system) }
+        return failed.contains(action) ? .otherApp : nil
+    }
+
+    /// Re-reads macOS's shortcuts (after the user or ShotIt changed them) and refreshes registrations and the UI.
+    func refreshSystemShortcuts() {
+        systemShortcuts = SystemShortcuts.load()
+        registerAll()
+        NotificationCenter.default.post(name: HotKeyCenter.didChange, object: nil)
+    }
+
     /// Temporarily disable hotkeys (e.g. while recording a new shortcut).
     func suspend() { unregisterAll() }
 
     func registerAll() {
         installHandlerIfNeeded()
         unregisterAll()
+        failed.removeAll()
+        systemShortcuts = SystemShortcuts.load()
         var next: UInt32 = 1
         for action in HotKeyAction.allCases {
             guard let sc = shortcut(for: action) else { continue }
@@ -157,6 +186,7 @@ final class HotKeyCenter {
                 refs[action] = ref
                 ids[next] = action
             } else {
+                failed.insert(action)
                 NSLog("ShotIt: failed to register hotkey \(sc.displayString) for \(action.rawValue): \(status)")
             }
             next += 1

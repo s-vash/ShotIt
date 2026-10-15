@@ -1,4 +1,5 @@
 import AppKit
+import Carbon.HIToolbox
 import ServiceManagement
 import SwiftUI
 
@@ -164,30 +165,34 @@ private struct ShortcutsPane: View {
 
     var body: some View {
         Form {
+            macOSShortcutsSection
             Section {
                 ForEach(HotKeyAction.allCases) { action in
-                    HStack {
-                        Text(action.title)
-                        Spacer()
-                        let current = HotKeyCenter.shared.shortcut(for: action)
-                        if current != action.defaultShortcut {
-                            Button { HotKeyCenter.shared.resetShortcut(for: action); revision += 1 } label: {
-                                Image(systemName: "arrow.counterclockwise")
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack {
+                            Text(action.title)
+                            Spacer()
+                            let current = HotKeyCenter.shared.shortcut(for: action)
+                            if current != action.defaultShortcut {
+                                Button { HotKeyCenter.shared.resetShortcut(for: action); revision += 1 } label: {
+                                    Image(systemName: "arrow.counterclockwise")
+                                }
+                                .buttonStyle(.borderless)
+                                .help(action.defaultShortcut.map { "Reset to default (\($0.displayString))" } ?? "Reset to default (none)")
                             }
-                            .buttonStyle(.borderless)
-                            .help(action.defaultShortcut.map { "Reset to default (\($0.displayString))" } ?? "Reset to default (none)")
-                        }
-                        if current != nil {
-                            Button { HotKeyCenter.shared.setShortcut(nil, for: action); revision += 1 } label: {
-                                Image(systemName: "xmark.circle.fill")
+                            if current != nil {
+                                Button { HotKeyCenter.shared.setShortcut(nil, for: action); revision += 1 } label: {
+                                    Image(systemName: "xmark.circle.fill")
+                                }
+                                .buttonStyle(.borderless)
+                                .foregroundStyle(.secondary)
+                                .help("Clear shortcut")
                             }
-                            .buttonStyle(.borderless)
-                            .foregroundStyle(.secondary)
-                            .help("Clear shortcut")
+                            ShortcutRecorder(action: action)
+                                .frame(width: 140, height: 24)
+                                .id("\(action.rawValue)-\(revision)")
                         }
-                        ShortcutRecorder(action: action)
-                            .frame(width: 140, height: 24)
-                            .id("\(action.rawValue)-\(revision)")
+                        conflictNote(for: action)
                     }
                 }
             } footer: {
@@ -205,6 +210,84 @@ private struct ShortcutsPane: View {
         }
         .formStyle(.grouped)
         .onReceive(NotificationCenter.default.publisher(for: HotKeyCenter.didChange)) { _ in revision += 1 }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+            HotKeyCenter.shared.refreshSystemShortcuts()  // the user may have changed them in System Settings
+        }
+    }
+
+    // MARK: Built-in macOS screenshot shortcuts
+
+    /// Offers to swap macOS's ⌘⇧3 / ⌘⇧4 screenshot shortcuts for ShotIt's, or to give them back.
+    @ViewBuilder private var macOSShortcutsSection: some View {
+        let _ = revision
+        let system = SystemShortcuts.load()
+        let builtInOn = system.contains { SystemShortcuts.replacedIDs.contains($0.id) && $0.enabled }
+        let mine = SystemShortcuts.disabledByShotIt().intersection(SystemShortcuts.replacedIDs)
+        if builtInOn {
+            Section {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("The built-in macOS screenshot shortcuts (⌘⇧3, ⌘⇧4) are on.")
+                    Text("Replace them to use those keys for ShotIt: ⌘⇧3 takes a fullscreen screenshot and ⌘⇧4 captures an area. You can undo this at any time.")
+                        .font(.caption).foregroundStyle(.secondary)
+                    Button("Replace with ShotIt") { takeOverBuiltInShortcuts() }
+                }
+            }
+        } else if !mine.isEmpty {
+            Section {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("ShotIt has turned off the built-in macOS screenshot shortcuts.")
+                    Button("Give Them Back to macOS") { restoreBuiltInShortcuts() }
+                }
+            }
+        }
+    }
+
+    private func takeOverBuiltInShortcuts() {
+        guard SystemShortcuts.setEnabled(SystemShortcuts.replacedIDs, false) else {
+            Toast.show("Couldn't change the macOS shortcuts. Turn them off in System Settings › Keyboard › Keyboard Shortcuts › Screenshots.", style: .error, duration: 5)
+            return
+        }
+        let cmdShift = NSEvent.ModifierFlags([.command, .shift]).rawValue
+        HotKeyCenter.shared.setShortcut(Shortcut(keyCode: UInt32(kVK_ANSI_3), modifiers: cmdShift), for: .fullscreen)
+        HotKeyCenter.shared.setShortcut(Shortcut(keyCode: UInt32(kVK_ANSI_4), modifiers: cmdShift), for: .area)
+        HotKeyCenter.shared.refreshSystemShortcuts()
+        revision += 1
+    }
+
+    private func restoreBuiltInShortcuts() {
+        SystemShortcuts.setEnabled(Array(SystemShortcuts.disabledByShotIt()), true)
+        HotKeyCenter.shared.refreshSystemShortcuts()
+        // Anything of ours that now collides with macOS goes back to its default.
+        for action in HotKeyAction.allCases {
+            if case .system = HotKeyCenter.shared.conflict(for: action) { HotKeyCenter.shared.resetShortcut(for: action) }
+        }
+        revision += 1
+    }
+
+    // MARK: Conflicts
+
+    @ViewBuilder private func conflictNote(for action: HotKeyAction) -> some View {
+        if let conflict = HotKeyCenter.shared.conflict(for: action) {
+            HStack(spacing: 6) {
+                Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange)
+                switch conflict {
+                case .action(let other):
+                    Text("Also used by “\(other.title)”, so only one of them will work.")
+                case .system(let s):
+                    Text("macOS already uses this for “\(s.name)”.")
+                    Button("Turn Off in macOS") {
+                        if SystemShortcuts.setEnabled([s.id], false) { HotKeyCenter.shared.refreshSystemShortcuts() }
+                        else { Toast.show("Couldn't change the macOS shortcut. Change it in System Settings › Keyboard › Keyboard Shortcuts.", style: .error, duration: 5) }
+                        revision += 1
+                    }
+                    .controlSize(.small)
+                case .otherApp:
+                    Text("Another app already uses this shortcut. Quit it or choose different keys.")
+                }
+            }
+            .font(.caption)
+            .foregroundStyle(.secondary)
+        }
     }
 }
 

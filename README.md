@@ -37,7 +37,7 @@
 - **Free and private.** No account, no ads, no tracking. Everything stays on your Mac.
 
 Default shortcuts: **⌘⇧1** whole screen, **⌘⇧2** area, **⌃⌥⌘O** copy text from the screen. Everything else can be
-set in **Settings › Shortcuts**. If another screenshot app already uses ⌘⇧1 / ⌘⇧2, quit it or pick different keys there.
+set in **Settings › Shortcuts**. Settings warns you when a shortcut clashes with macOS or another app, and can swap the built-in ⌘⇧3 / ⌘⇧4 screenshot shortcuts for ShotIt's with one click.
 
 ## Install
 
@@ -64,7 +64,7 @@ Or build it yourself, below.
 | Editor extras | Undo/redo, move/resize handles, Shift constraints, arrow-key nudge, zoom (pinch, ⌘= ⌘- ⌘0 ⌘1), colour under cursor in 6 formats (I copies), `[` `]` size |
 | Pin to screen | Always-on-top; scroll = resize, ⌥-scroll = opacity, double-click/Esc closes |
 | Open file / clipboard image | Also via Finder "Open With" |
-| Settings | After-capture actions, save folder & format, Retina downscale, Esc behaviour, launch at login, hotkey recorder with per-shortcut clear/reset |
+| Settings | After-capture actions, save folder & format, Retina downscale, Esc behaviour, launch at login, hotkey recorder with per-shortcut clear/reset, conflict warnings, one-click replacement of the built-in macOS screenshot shortcuts |
 | URL scheme | `shotit://grab/area?then=copy,pin` (see Settings › Advanced) |
 | Scrolling capture | Auto-scroll (needs Accessibility), Up, and Manual modes; sticky headers/footers handled; stitched into one tall image |
 | Backdrop (K) | Wallpaper (your current desktop picture, automatic — the default), Auto (colours from the screenshot), gradient, solid or image; padding, layered shadow with a Depth control that follows the window's native rounded corners, aspect ratio, grain. Applied on copy/save/pin/drag; remembered between sessions |
